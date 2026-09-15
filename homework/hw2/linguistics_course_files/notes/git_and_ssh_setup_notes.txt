@@ -1,0 +1,2 @@
+notes from week 2 - git config, ssh keys, cloning repos
+ask about SSH key passphrase again
