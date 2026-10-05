@@ -1,0 +1,62 @@
+---
+title: "Spanish Vocabulary and Past Tenses in El monte de las ánimas"
+author: "Emily Loftis"
+date: "2026-10-03"
+format: html
+---
+
+## 1. Dataset Description
+
+For this project, I’m going to use about 800 words from the beginning of *El monte de las ánimas*, a Spanish story by Gustavo Adolfo Bécquer. I’ll start with “La noche de difuntos me despertó” and stop at the end of the sentence closest to 800 words.
+
+I found the story on Project Gutenberg in the collection *Obras escogidas*:
+
+- https://www.gutenberg.org/ebooks/53552
+
+**Format:** Gutenberg already has a plain-text version of the book:
+
+- https://www.gutenberg.org/cache/epub/53552/pg53552.txt
+
+I’ll copy my selected passage into a `.txt` file, leaving out the book information and section headings. The passage is entirely in Spanish.
+
+**Copyright:** The work is public domain in the United States, so I can include the passage in my public GitHub repository.
+
+## 2. Rationale
+
+I chose this story because I’m interested in Spanish and want to connect this project to something I'm so passionate about which is Spanish. I want to look at which words come up the most, especially words related to nighttime, fear, and sounds.
+
+I’m also curious about how the writer uses the preterite and imperfect. We practice these tenses in class, and it is good for me to comstantly be remembered about grammar so I want to see how they’re used in an actual story instead of separate practice sentences.
+
+## 3. Type of Analysis
+
+- **Frequency and vocabulary:** I’ll count words and find the most common content words, such as nouns, verbs, and adjectives. I’ll separate these from function words, like articles and prepositions. I’ll also calculate the type-token ratio, which compares the number of different words to the total number of words.
+- **Grammatical analysis:** I’ll look at preterite and imperfect verb forms, compare how often they appear, and examine how they’re used in the story.
+
+My **units of analysis** will be individual words and verb forms. I’ll keep the original spelling in the raw text and explain any spelling changes I make later.
+
+## 4. Preliminary Questions
+
+1. **Which five content words appear most often in the passage?**
+2. **Are there more preterite or imperfect verb forms in the passage?**
+3. **Does the writer use the preterite mainly for completed events and the imperfect for background descriptions or ongoing actions?**
+
+I expect the preterite to describe completed events and the imperfect to give background information because that’s how we’ve learned the difference in Spanish classes. I want to see whether this pattern shows up in the passage. My results will describe this sample rather than Spanish stories in general.
+
+## 5. A Look at the Data
+
+Here are eight lines copied from the original plain-text file:
+
+```
+La noche de difuntos me despertó á no sé qué hora el doble de las
+campanas; su tañido monótono y eterno me trajo á las mientes esta
+tradición que oí hace poco en Soria.
+
+Intenté dormir de nuevo; ¡imposible! Una vez aguijoneada, la
+imaginación es un caballo que se desboca y al que no sirve tirarle de
+la rienda. Por pasar el rato me decidí á escribirla, como en efecto
+lo hice.
+```
+
+## AI Use
+
+I used ChatGPT to help find some Spanish dataset options and formating this write-up.
