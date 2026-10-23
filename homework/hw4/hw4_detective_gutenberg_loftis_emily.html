@@ -91,8 +91,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#part-1-setup-and-cleaning" id="toc-part-1-setup-and-cleaning" class="nav-link active" data-scroll-target="#part-1-setup-and-cleaning">Part 1 — Setup and Cleaning</a></li>
   <li><a href="#part-2-tokens-types-and-a-fair-comparison" id="toc-part-2-tokens-types-and-a-fair-comparison" class="nav-link" data-scroll-target="#part-2-tokens-types-and-a-fair-comparison">Part 2 — Tokens, Types, and a Fair Comparison</a></li>
   <li><a href="#part-3-affixes-dialogue-and-common-words" id="toc-part-3-affixes-dialogue-and-common-words" class="nav-link" data-scroll-target="#part-3-affixes-dialogue-and-common-words">Part 3 — Affixes, Dialogue, and Common Words</a></li>
+  <li><a href="#part-4-visualize-it" id="toc-part-4-visualize-it" class="nav-link" data-scroll-target="#part-4-visualize-it">Part 4 — Visualize It</a></li>
   <li><a href="#part-5-the-verdict" id="toc-part-5-the-verdict" class="nav-link" data-scroll-target="#part-5-the-verdict">Part 5 — The Verdict</a></li>
-  <li><a href="#part-6-reflection" id="toc-part-6-reflection" class="nav-link" data-scroll-target="#part-6-reflection">Part 6 — Reflection</a></li>
+  <li><a href="#part-6---reflection" id="toc-part-6---reflection" class="nav-link" data-scroll-target="#part-6---reflection">Part 6 - Reflection</a></li>
   </ul>
 </nav>
 </div>
@@ -125,231 +126,326 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="part-1-setup-and-cleaning" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-setup-and-cleaning">Part 1 — Setup and Cleaning</h2>
-<div id="2efb9e30" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<div id="9026b878" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"pride_and_prejudice.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        book1_lines <span class="op">=</span> f.readlines()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"pride_and_prejudice.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        book1_lines <span class="op">=</span> f.readlines()</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"frankenstein.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        book2_lines <span class="op">=</span> f.readlines()</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">FileNotFoundError</span> <span class="im">as</span> error:</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Could not find a book file:"</span>, error)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> []</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> []</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lines <span class="kw">in</span> [book1_lines, book2_lines]:</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> lines <span class="kw">and</span> <span class="kw">not</span> lines[<span class="dv">0</span>].startswith(<span class="st">"*** START OF"</span>):</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        lines.pop(<span class="dv">0</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lines:</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        lines.pop(<span class="dv">0</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> lines <span class="kw">and</span> <span class="kw">not</span> lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END OF"</span>):</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        lines.pop()</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lines:</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        lines.pop()</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>book1_text <span class="op">=</span> <span class="st">""</span>.join(book1_lines).lower()</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>book2_text <span class="op">=</span> <span class="st">""</span>.join(book2_lines).lower()</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book1_text) <span class="cf">if</span> w]</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book2_text) <span class="cf">if</span> w]</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, <span class="bu">len</span>(book1_words), <span class="st">"words"</span>)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, <span class="bu">len</span>(book2_words), <span class="st">"words"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"frankenstein.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        book2_lines <span class="op">=</span> f.readlines()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, <span class="bu">len</span>(book1_lines), <span class="st">"lines"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, <span class="bu">len</span>(book2_lines), <span class="st">"lines"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">FileNotFoundError</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Couldn't find a book file. Check its name and location."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Pride and Prejudice: 128755 words
-Frankenstein: 75379 words</code></pre>
+<pre><code>Pride and Prejudice: 14915 lines
+Frankenstein: 7741 lines</code></pre>
 </div>
 </div>
-<p>My code reads both books and removes the Gutenberg information at the beginning and end using while loops. Then it puts the lines together, makes everything lowercase, and splits the text into words. It also removes any empty strings. I used ChatGPT to troubleshoot a few things.</p>
+<div id="d9f15ec9" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book1_lines[<span class="dv">0</span>].startswith(<span class="st">"*** START"</span>):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> book1_lines[<span class="dv">1</span>:]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>book1_lines <span class="op">=</span> book1_lines[<span class="dv">1</span>:]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book1_lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END"</span>):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> book1_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>book1_lines <span class="op">=</span> book1_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_lines[:<span class="dv">5</span>])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_lines[<span class="op">-</span><span class="dv">5</span>:])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['\n', '\n', '\n', '\n', '                            [Illustration:\n']
+['                  TOOKS COURT, CHANCERY LANE, LONDON.\n', '\n', '\n', '\n', '\n']</code></pre>
+</div>
+</div>
+<div id="800b2c58" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book2_lines[<span class="dv">0</span>].startswith(<span class="st">"*** START"</span>):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> book2_lines[<span class="dv">1</span>:]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>book2_lines <span class="op">=</span> book2_lines[<span class="dv">1</span>:]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book2_lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END"</span>):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> book2_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>book2_lines <span class="op">=</span> book2_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_lines[:<span class="dv">5</span>])</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_lines[<span class="op">-</span><span class="dv">5</span>:])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['\n', 'Frankenstein;\n', '\n', 'or, the Modern Prometheus\n', '\n']
+['lost in darkness and distance.\n', '\n', '\n', '\n', '\n']</code></pre>
+</div>
+</div>
+<div id="1a548cf1" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>book1_text <span class="op">=</span> <span class="st">""</span>.join(book1_lines).lower()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>book2_text <span class="op">=</span> <span class="st">""</span>.join(book2_lines).lower()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book1_text)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book2_text)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_words[:<span class="dv">10</span>])</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_words[:<span class="dv">10</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['illustration', 'george', 'allen', 'publisher', '156', 'charing', 'cross', 'road', 'london', 'ruskin']
+['frankenstein', 'or', 'the', 'modern', 'prometheus', 'by', 'mary', 'wollstonecraft', 'godwin', 'shelley']</code></pre>
+</div>
+</div>
+<p>I opened the 2 books and used .readlines() to save each book as a list of lines. I then used while loops to remove many of the first line and last lines until they reacehd the markers. After, I removed the markers. I joined the other lines that were left and made the text lowercase. I used re.split() to separate it into words. Then I removed the empty strings. I used ChatGPT to understand how to use “while” and fix a file-path problem.</p>
 </section>
 <section id="part-2-tokens-types-and-a-fair-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-tokens-types-and-a-fair-comparison">Part 2 — Tokens, Types, and a Fair Comparison</h2>
-<div id="a1108e6e" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words <span class="kw">in</span> [</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words),</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> <span class="bu">len</span>(words)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(words))</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ttr <span class="op">=</span> types <span class="op">/</span> tokens</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    first_10000 <span class="op">=</span> words[:<span class="dv">10000</span>]</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(first_10000)) <span class="op">/</span> <span class="bu">len</span>(first_10000)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    total_length <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word <span class="kw">in</span> words:</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    average_length <span class="op">=</span> total_length <span class="op">/</span> tokens</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(title)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Tokens:"</span>, tokens)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Types:"</span>, types)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, <span class="bu">round</span>(ttr, <span class="dv">4</span>))</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"First 10,000 words TTR:"</span>, <span class="bu">round</span>(sample_ttr, <span class="dv">4</span>))</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Average word length:"</span>, <span class="bu">round</span>(average_length, <span class="dv">2</span>))</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="2427ffcc" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>book1_tokens <span class="op">=</span> <span class="bu">len</span>(book1_words)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>book2_tokens <span class="op">=</span> <span class="bu">len</span>(book2_words)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>book1_types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book1_words))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>book2_types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book2_words))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>book1_ttr <span class="op">=</span> book1_types <span class="op">/</span> book1_tokens</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>book2_ttr <span class="op">=</span> book2_types <span class="op">/</span> book2_tokens</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tokens:"</span>, book1_tokens)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Types:"</span>, book1_types)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, book1_ttr)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tokens:"</span>, book2_tokens)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Types:"</span>, book2_types)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, book2_ttr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Pride and Prejudice
 Tokens: 128755
 Types: 7027
-Full-book TTR: 0.0546
-First 10,000 words TTR: 0.2267
-Average word length: 4.39
-
+Full-book TTR: 0.054576521300143684
 Frankenstein
 Tokens: 75379
 Types: 7037
-Full-book TTR: 0.0934
-First 10,000 words TTR: 0.255
-Average word length: 4.41
-</code></pre>
+Full-book TTR: 0.09335491317210363</code></pre>
 </div>
 </div>
-<p>My code counts the total words and the unique words in each book, then divides unique words by total words to get the TTR. It does the same thing with the first 10,000 words so the comparison is fairer. It also adds up the word lengths and divides by the total words to get the average word length. No AI use.</p>
+<div id="b1e0f07c" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>book1_sample <span class="op">=</span> book1_words[:<span class="dv">10000</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>book2_sample <span class="op">=</span> book2_words[:<span class="dv">10000</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>book1_sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book1_sample)) <span class="op">/</span> <span class="bu">len</span>(book1_sample)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>book2_sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book2_sample)) <span class="op">/</span> <span class="bu">len</span>(book2_sample)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — first 10,000 words TTR:"</span>, book1_sample_ttr)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — first 10,000 words TTR:"</span>, book2_sample_ttr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pride and Prejudice — first 10,000 words TTR: 0.2267
+Frankenstein — first 10,000 words TTR: 0.255</code></pre>
+</div>
+</div>
+<div id="d73e2fd5" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>book1_total_length <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word <span class="kw">in</span> book1_words:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    book1_total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>book1_average_length <span class="op">=</span> book1_total_length <span class="op">/</span> book1_tokens</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>book2_total_length <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word <span class="kw">in</span> book2_words:</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    book2_total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>book2_average_length <span class="op">=</span> book2_total_length <span class="op">/</span> book2_tokens</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — average word length:"</span>, book1_average_length)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — average word length:"</span>, book2_average_length)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pride and Prejudice — average word length: 4.391759543318706
+Frankenstein — average word length: 4.4129532097799125</code></pre>
+</div>
+</div>
+<p>I used len() to count the tokens and len(set()) to count the types with no duplicates. Then calculated TTR dividing types by tokens. Frankenstein had the higher TTR of the books and the first 10,000 words. Comparing 10,000 words from both books is more fair because the texts are the same length, so it reduces the effect of text length on TTR. For the calculation of the average word length, I used a loop to add each word’s length and divided the total by the number of the words. The average word lengths were almost the same. I used AI to troubleshoot the error when I left out necesary parenthesis and to check I correctly used only the 10,000 words of each book.</p>
 </section>
 <section id="part-3-affixes-dialogue-and-common-words" class="level2">
 <h2 class="anchored" data-anchor-id="part-3-affixes-dialogue-and-common-words">Part 3 — Affixes, Dialogue, and Common Words</h2>
-<div id="c3d74105" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> <span class="bu">set</span>(<span class="st">"""</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">a an the and or but if as of at by for from in into on to with</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">is am are was were be been being have has had do does did</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">i me my mine we us our ours you your yours he him his she her hers</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">it its they them their theirs this that these those</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">not no so very too can could will would shall should may might must</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">s t don didn isn wasn weren</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">all any both each either every few more most much neither other</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">several some such what whatever which who whom whose</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">where when why how there here then than also just only</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">now yet already again ever never always often sometimes</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">before after during through about above below between</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">up down out off over under further once</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">because while although until unless whether</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="st">one two mr mrs miss sir</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>.split())</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words, lines <span class="kw">in</span> [</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words, book1_lines),</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words, book2_lines)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(title)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    ly_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-ly words per 1,000:"</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>          <span class="bu">round</span>(<span class="bu">len</span>(ly_words) <span class="op">/</span> <span class="bu">len</span>(words) <span class="op">*</span> <span class="dv">1000</span>, <span class="dv">2</span>))</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Unique -ly words:"</span>, <span class="bu">sorted</span>(<span class="bu">set</span>(ly_words)))</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> affix <span class="kw">in</span> [<span class="st">"ness"</span>, <span class="st">"ment"</span>, <span class="st">"un"</span>]:</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> affix <span class="op">==</span> <span class="st">"un"</span>:</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            matches <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.startswith(affix)]</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>            matches <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.endswith(affix)]</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(affix, <span class="st">"per 1,000:"</span>,</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>              <span class="bu">round</span>(<span class="bu">len</span>(matches) <span class="op">/</span> <span class="bu">len</span>(words) <span class="op">*</span> <span class="dv">1000</span>, <span class="dv">2</span>))</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    dialogue_lines <span class="op">=</span> [</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        line <span class="cf">for</span> line <span class="kw">in</span> lines</span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">"“"</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">"”"</span> <span class="kw">in</span> line</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Lines containing quotation marks (%):"</span>,</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>          <span class="bu">round</span>(<span class="bu">len</span>(dialogue_lines) <span class="op">/</span> <span class="bu">len</span>(lines) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">2</span>))</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    content_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Top 10 words after stopword removal:"</span>,</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>          Counter(content_words).most_common(<span class="dv">10</span>))</span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="5219f519" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>book1_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>book2_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>book1_ly_rate <span class="op">=</span> <span class="bu">len</span>(book1_ly) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>book2_ly_rate <span class="op">=</span> <span class="bu">len</span>(book2_ly) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ly words per 1,000:"</span>, book1_ly_rate)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ly words per 1,000:"</span>, book2_ly_rate)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_ly[:<span class="dv">30</span>])</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_ly[:<span class="dv">30</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Pride and Prejudice
--ly words per 1,000: 18.54
-Unique -ly words: ['_mightily', '_relatively', '_unhesitatingly', 'abominably', 'abruptly', 'absolutely', 'abundantly', 'accidentally', 'accordingly', 'actually', 'acutely', 'admittedly', 'advantageously', 'affectionately', 'agreeably', 'amply', 'angrily', 'anxiously', 'apparently', 'apply', 'appreciably', 'archly', 'ardently', 'artfully', 'assembly', 'assiduously', 'attentively', 'badly', 'barbarously', 'barely', 'bitterly', 'boisterously', 'boldly', 'briefly', 'brotherly', 'bully', 'busily', 'calmly', 'carefully', 'certainly', 'charmingly', 'cheerfully', 'chiefly', 'civilly', 'clearly', 'closely', 'coarsely', 'coldly', 'comfortably', 'commonly', 'comparatively', 'completely', 'comply', 'composedly', 'concisely', 'condescendingly', 'conditionally', 'confidently', 'conscientiously', 'consciously', 'consequently', 'considerably', 'constantly', 'contemptuously', 'continually', 'coolly', 'cordially', 'creditably', 'cruelly', 'daily', 'dearly', 'decidedly', 'deeply', 'deliberately', 'delicately', 'delightfully', 'deservedly', 'designedly', 'despicably', 'differently', 'directly', 'disagreeably', 'distinctly', 'distractedly', 'doubly', 'doubtingly', 'dreadfully', 'drily', 'dutifully', 'eagerly', 'early', 'earnestly', 'earthly', 'easily', 'economically', 'effectually', 'elderly', 'eminently', 'emphatically', 'entirely', 'equally', 'especially', 'evidently', 'exactly', 'exceedingly', 'excessively', 'expeditiously', 'explicitly', 'expressively', 'expressly', 'exquisitely', 'extremely', 'faintly', 'fairly', 'faithfully', 'falsely', 'familiarly', 'family', 'favourably', 'feelingly', 'fervently', 'finally', 'firmly', 'fluently', 'folly', 'forcibly', 'formerly', 'fortunately', 'fourthly', 'frankly', 'freely', 'frequently', 'fretfully', 'friendly', 'fully', 'gaily', 'generally', 'generously', 'gladly', 'gracefully', 'graciously', 'gradually', 'gratefully', 'gravely', 'greatly', 'grievously', 'grossly', 'handsomely', 'happily', 'hardly', 'harshly', 'hastily', 'hatefully', 'heartily', 'highly', 'historically', 'honestly', 'horribly', 'immediately', 'immensely', 'impatiently', 'impenetrably', 'imperfectly', 'imply', 'incautiously', 'incessantly', 'independently', 'indispensably', 'indistinctly', 'individually', 'industriously', 'inevitably', 'inexpressibly', 'infinitely', 'inflexibly', 'innocently', 'instantly', 'instinctively', 'insufferably', 'intentionally', 'intently', 'intimately', 'invariably', 'involuntarily', 'irrevocably', 'jestingly', 'joyfully', 'july', 'justly', 'kindly', 'laboriously', 'lastly', 'lately', 'latterly', 'laughingly', 'lawfully', 'legally', 'leisurely', 'liberally', 'likely', 'lively', 'loudly', 'lovely', 'luckily', 'masterly', 'materially', 'meanly', 'mechanically', 'melancholy', 'merely', 'mildly', 'minutely', 'mischievously', 'miserably', 'miserly', 'monthly', 'mostly', 'mutually', 'narrowly', 'naturally', 'naturedly', 'nearly', 'necessarily', 'needlessly', 'newly', 'nicely', 'nominally', 'obligingly', 'occasionally', 'oddly', 'only', 'openly', 'oppressively', 'orderly', 'originally', 'outwardly', 'painfully', 'particularly', 'partly', 'peculiarly', 'perfectly', 'perpetually', 'perseveringly', 'plainly', 'pleasantly', 'pointedly', 'politely', 'poorly', 'positively', 'possibly', 'precisely', 'presently', 'pressingly', 'previously', 'principally', 'privately', 'probably', 'prodigiously', 'properly', 'proudly', 'provokingly', 'psychologically', 'publicly', 'punctually', 'purposely', 'quickly', 'quietly', 'rapidly', 'rapturously', 'rationally', 'readily', 'really', 'reasonably', 'regularly', 'rely', 'remarkably', 'repeatedly', 'reply', 'resentfully', 'resolutely', 'richly', 'rightly', 'sadly', 'safely', 'sally', 'satisfactorily', 'scarcely', 'secondly', 'secretly', 'sensibly', 'separately', 'seriously', 'shapely', 'shortly', 'sickly', 'silently', 'silly', 'simply', 'sincerely', 'sisterly', 'slightingly', 'slightly', 'slowly', 'sly', 'smilingly', 'smoothly', 'solely', 'sorely', 'speedily', 'stately', 'steadfastly', 'steadily', 'stiffly', 'stiltedly', 'stoutly', 'strangely', 'strenuously', 'strictly', 'strikingly', 'strongly', 'successfully', 'successively', 'suddenly', 'sufficiently', 'superlatively', 'supply', 'surely', 'synonymously', 'tenderly', 'thankfully', 'thirdly', 'thoroughly', 'tolerably', 'totally', 'tranquilly', 'triumphantly', 'truly', 'ugly', 'ultimately', 'unaffectedly', 'unavoidably', 'uncommonly', 'unconsciously', 'undoubtedly', 'unequally', 'unexpectedly', 'unfavourably', 'unfortunately', 'unfrequently', 'unhappily', 'uniformly', 'universally', 'unjustly', 'unknowingly', 'unlikely', 'unluckily', 'unnaturally', 'unnecessarily', 'unpleasantly', 'unquestionably', 'unreasonably', 'unsuccessfully', 'unusually', 'unwillingly', 'unworthily', 'uselessly', 'usually', 'utterly', 'vastly', 'verily', 'vigorously', 'violently', 'voluntarily', 'wantonly', 'warmly', 'wholly', 'wickedly', 'widely', 'wilfully', 'willingly', 'wisely', 'womanly', 'wonderfully', 'worldly', 'wretchedly']
-ness per 1,000: 3.14
-ment per 1,000: 3.53
-un per 1,000: 4.57
-Lines containing quotation marks (%): 17.77
-Top 10 words after stopword removal: [('elizabeth', 645), ('darcy', 430), ('said', 406), ('bennet', 339), ('bingley', 310), ('jane', 302), ('know', 241), ('though', 238), ('herself', 236), ('well', 230)]
-
-Frankenstein
--ly words per 1,000: 14.74
-Unique -ly words: ['absolutely', 'accidentally', 'accordingly', 'actually', 'affectionately', 'angrily', 'anxiously', 'apparently', 'apply', 'ardently', 'assuredly', 'attentively', 'audibly', 'barbarously', 'benevolently', 'bitterly', 'bodily', 'briefly', 'brightly', 'brotherly', 'busily', 'calmly', 'carefully', 'carelessly', 'certainly', 'characteristically', 'cheerfully', 'chiefly', 'chilly', 'clearly', 'closely', 'completely', 'comply', 'confusedly', 'consequently', 'considerably', 'constantly', 'continually', 'contumely', 'conveniently', 'cruelly', 'curiously', 'daily', 'dangerously', 'deadly', 'dearly', 'decidedly', 'deeply', 'desperately', 'diabolically', 'directly', 'dismally', 'distinctly', 'divinely', 'doubly', 'dreadfully', 'eagerly', 'early', 'earnestly', 'easily', 'eminently', 'energetically', 'entirely', 'entrancingly', 'equally', 'erroneously', 'especially', 'eternally', 'evidently', 'exactly', 'exceedingly', 'excessively', 'exquisitely', 'extremely', 'fairly', 'falsely', 'familiarly', 'family', 'fatally', 'fearfully', 'feebly', 'fervently', 'finally', 'firmly', 'fly', 'folly', 'fondly', 'forcibly', 'formerly', 'fortunately', 'freely', 'frequently', 'fruitlessly', 'fully', 'furiously', 'generally', 'gently', 'ghastly', 'gladly', 'gloomily', 'gradually', 'greatly', 'greedily', 'grievously', 'happily', 'hardly', 'hastily', 'heartily', 'heavenly', 'heavily', 'hideously', 'highly', 'holy', 'ignorantly', 'immeasurably', 'immediately', 'impatiently', 'imperatively', 'imply', 'imprudently', 'incessantly', 'indelibly', 'indiscriminately', 'infallibly', 'infinitely', 'inhospitably', 'instantly', 'instinctively', 'insultingly', 'intently', 'involuntarily', 'irretrievably', 'irrevocably', 'italy', 'july', 'kindly', 'knightly', 'lastly', 'lately', 'latterly', 'liberally', 'likely', 'listlessly', 'literally', 'lively', 'lonely', 'loudly', 'lovely', 'madly', 'manly', 'materially', 'meanly', 'melancholy', 'merely', 'mildly', 'minutely', 'miserably', 'momentarily', 'mournfully', 'nearly', 'necessarily', 'negligently', 'nightly', 'northerly', 'obscurely', 'officially', 'only', 'openly', 'painfully', 'partially', 'particularly', 'partly', 'passionately', 'patiently', 'peaceably', 'pearly', 'peculiarly', 'perceptibly', 'perfectly', 'periodically', 'perpendicularly', 'perpetually', 'personally', 'plainly', 'playfully', 'poignantly', 'positively', 'possibly', 'practically', 'precisely', 'presently', 'previously', 'principally', 'probably', 'profoundly', 'progressively', 'proportionably', 'publicly', 'quickly', 'quietly', 'rapidly', 'rapturously', 'rarely', 'rashly', 'really', 'reasonably', 'regularly', 'rely', 'remarkably', 'reply', 'roughly', 'saintly', 'scarcely', 'secretly', 'securely', 'seemingly', 'sensibly', 'shamefully', 'shortly', 'simply', 'sincerely', 'singularly', 'slenderly', 'slowly', 'sly', 'softly', 'solely', 'soundly', 'southwesterly', 'speedily', 'stately', 'steadily', 'strangely', 'strenuously', 'strongly', 'successfully', 'suddenly', 'sufficiently', 'supply', 'surely', 'tardily', 'tenderly', 'terribly', 'terrifically', 'thickly', 'thoughtlessly', 'tolerably', 'totally', 'tranquilly', 'transversely', 'triumphantly', 'truly', 'ugly', 'ultimately', 'uncommonly', 'uncontrollably', 'undoubtedly', 'unearthly', 'unfortunately', 'unjustly', 'unreservedly', 'untimely', 'unwillingly', 'usually', 'utterly', 'vainly', 'violently', 'voluntarily', 'wantonly', 'warmly', 'wearily', 'wholly', 'willingly', 'wonderfully', 'wondrously', 'worldly', 'wretchedly', 'wrongfully']
-ness per 1,000: 3.83
-ment per 1,000: 2.39
-un per 1,000: 5.82
-Lines containing quotation marks (%): 8.27
-Top 10 words after stopword removal: [('man', 137), ('myself', 136), ('father', 133), ('upon', 126), ('life', 115), ('first', 108), ('own', 107), ('eyes', 104), ('said', 102), ('time', 98)]
-</code></pre>
+<pre><code>Pride and Prejudice — ly words per 1,000: 18.53908586074327
+Frankenstein — ly words per 1,000: 14.738852996192573
+['gratefully', 'fairly', 'unusually', 'probably', '_relatively', 'admittedly', 'wickedly', 'expressly', 'only', 'likely', '_unhesitatingly', 'eminently', 'barely', 'early', 'barely', 'only', 'hardly', 'hardly', 'masterly', 'presently', 'perfectly', 'certainly', 'advantageously', 'appreciably', 'consciously', 'badly', 'infinitely', 'certainly', 'likely', 'differently']
+['heavenly', 'undoubtedly', 'only', 'only', 'early', 'passionately', 'heavily', 'voluntarily', 'actually', 'only', 'fly', 'quickly', 'actually', 'easily', 'slowly', 'certainly', 'reply', 'bitterly', 'only', 'greatly', 'certainly', 'madly', 'characteristically', 'easily', 'equally', 'peculiarly', 'briefly', 'instantly', 'decidedly', 'wholly']</code></pre>
 </div>
 </div>
-<p>My code looks for words ending in ly, ness, and ment, and words starting with un. It turns the counts into rates per 1,000 words so I can compare the books even though they are different lengths. It also counts lines with quotation marks and finds the ten most common words after removing words from my stopword list. No AI use. ## Part 4 — Visualize It</p>
-<div id="5ca0cf76" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>book1_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>book2_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ly_rates <span class="op">=</span> [</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">len</span>(book1_ly) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">len</span>(book2_ly) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Jane Austen"</span>, <span class="st">"Mary Shelley"</span>], ly_rates,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[<span class="st">"mediumpurple"</span>, <span class="st">"teal"</span>])</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words Ending in -ly by Author"</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Author"</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"-ly words per 1,000 words"</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ly_comparison.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words <span class="kw">in</span> [</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words),</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words)</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    frequencies <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(words).most_common()]</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(frequencies) <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    plt.plot(ranks, frequencies, label<span class="op">=</span>title)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">"log"</span>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Zipf Plot of Both Novels"</span>)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Word rank (log scale)"</span>)</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Word frequency (log scale)"</span>)</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"zipf_comparison.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>plt.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="92414879" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>book1_ness <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ness"</span>)]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>book2_ness <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ness"</span>)]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>book1_ment <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ment"</span>)]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>book2_ment <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ment"</span>)]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>book1_un <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.startswith(<span class="st">"un"</span>)]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>book2_un <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.startswith(<span class="st">"un"</span>)]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ness per 1,000:"</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_ness) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ness per 1,000:"</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_ness) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ment per 1,000:"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_ment) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ment per 1,000:"</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_ment) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — un per 1,000:"</span>,</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_un) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — un per 1,000:"</span>,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_un) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pride and Prejudice — ness per 1,000: 3.1377422236029666
+Frankenstein — ness per 1,000: 3.83395906021571
+Pride and Prejudice — ment per 1,000: 3.5260766572171955
+Frankenstein — ment per 1,000: 2.3879329786810652
+Pride and Prejudice — un per 1,000: 4.566812939303328
+Frankenstein — un per 1,000: 5.823903209116597</code></pre>
+</div>
+</div>
+<div id="ec3b959f" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>book1_nonempty <span class="op">=</span> [line <span class="cf">for</span> line <span class="kw">in</span> book1_lines <span class="cf">if</span> line.strip() <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>book2_nonempty <span class="op">=</span> [line <span class="cf">for</span> line <span class="kw">in</span> book2_lines <span class="cf">if</span> line.strip() <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>book1_dialogue <span class="op">=</span> [</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    line <span class="cf">for</span> line <span class="kw">in</span> book1_nonempty</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'“'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'‘'</span> <span class="kw">in</span> line</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>book2_dialogue <span class="op">=</span> [</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    line <span class="cf">for</span> line <span class="kw">in</span> book2_nonempty</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'“'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'‘'</span> <span class="kw">in</span> line</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>book1_dialogue_percent <span class="op">=</span> <span class="bu">len</span>(book1_dialogue) <span class="op">/</span> <span class="bu">len</span>(book1_nonempty) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>book2_dialogue_percent <span class="op">=</span> <span class="bu">len</span>(book2_dialogue) <span class="op">/</span> <span class="bu">len</span>(book2_nonempty) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — dialogue lines (%):"</span>, book1_dialogue_percent)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — dialogue lines (%):"</span>, book2_dialogue_percent)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_dialogue[:<span class="dv">3</span>])</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_dialogue[:<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pride and Prejudice — dialogue lines (%): 13.947459384721741
+Frankenstein — dialogue lines (%): 6.8390715064651815
+['_Walt Whitman has somewhere a fine and just distinction between “loving\n', 'by allowance” and “loving with personal love.” This distinction applies\n', 'to their best work than in the case of those others who are loved “by\n']
+['inclinations. “What a noble fellow!” you will exclaim. He is\n', 'I am preparing to depart. I am going to unexplored regions, to “the\n', 'woeful as the “Ancient Mariner.” You will smile at my allusion, but I\n']</code></pre>
+</div>
+</div>
+<div id="ad48e191" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"the"</span>, <span class="st">"to"</span>, <span class="st">"and"</span>, <span class="st">"of"</span>, <span class="st">"a"</span>, <span class="st">"her"</span>, <span class="st">"i"</span>, <span class="st">"in"</span>, <span class="st">"was"</span>, <span class="st">"it"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"she"</span>, <span class="st">"he"</span>, <span class="st">"be"</span>, <span class="st">"that"</span>, <span class="st">"you"</span>, <span class="st">"not"</span>, <span class="st">"had"</span>, <span class="st">"as"</span>, <span class="st">"his"</span>, <span class="st">"for"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"with"</span>, <span class="st">"is"</span>, <span class="st">"have"</span>, <span class="st">"but"</span>, <span class="st">"at"</span>, <span class="st">"so"</span>, <span class="st">"all"</span>, <span class="st">"my"</span>, <span class="st">"been"</span>, <span class="st">"him"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"on"</span>, <span class="st">"by"</span>, <span class="st">"could"</span>, <span class="st">"would"</span>, <span class="st">"very"</span>, <span class="st">"no"</span>, <span class="st">"what"</span>, <span class="st">"which"</span>, <span class="st">"they"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"were"</span>, <span class="st">"there"</span>, <span class="st">"me"</span>, <span class="st">"an"</span>, <span class="st">"must"</span>, <span class="st">"this"</span>, <span class="st">"said"</span>, <span class="st">"from"</span>, <span class="st">"or"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"will"</span>, <span class="st">"any"</span>, <span class="st">"much"</span>, <span class="st">"than"</span>, <span class="st">"such"</span>, <span class="st">"their"</span>, <span class="st">"them"</span>, <span class="st">"if"</span>, <span class="st">"do"</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"did"</span>, <span class="st">"one"</span>, <span class="st">"when"</span>, <span class="st">"your"</span>, <span class="st">"more"</span>, <span class="st">"are"</span>, <span class="st">"we"</span>, <span class="st">"who"</span>, <span class="st">"up"</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"out"</span>, <span class="st">"down"</span>, <span class="st">"into"</span>, <span class="st">"s"</span>, <span class="st">"t"</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> stopwords <span class="op">+</span> [</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mr"</span>, <span class="st">"mrs"</span>, <span class="st">"miss"</span>, <span class="st">"am"</span>, <span class="st">"should"</span>, <span class="st">"now"</span>, <span class="st">"these"</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"yet"</span>, <span class="st">"some"</span>, <span class="st">"before"</span>, <span class="st">"myself"</span>,</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"has"</span>, <span class="st">"though"</span>, <span class="st">"herself"</span>, <span class="st">"how"</span>, <span class="st">"upon"</span>, <span class="st">"our"</span>,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"its"</span>, <span class="st">"only"</span>, <span class="st">"every"</span>, <span class="st">"then"</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>book1_content <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>book2_content <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>book1_counts <span class="op">=</span> Counter(book1_content)</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>book2_counts <span class="op">=</span> Counter(book2_content)</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, book1_counts.most_common(<span class="dv">10</span>))</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, book2_counts.most_common(<span class="dv">10</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pride and Prejudice: [('elizabeth', 645), ('darcy', 430), ('bennet', 339), ('bingley', 310), ('jane', 302), ('know', 241), ('well', 230), ('never', 228), ('other', 222), ('think', 222)]
+Frankenstein: [('man', 137), ('father', 133), ('life', 115), ('first', 108), ('might', 108), ('own', 107), ('shall', 104), ('eyes', 104), ('may', 99), ('time', 98)]</code></pre>
+</div>
+</div>
+<p>I used .endswith() and .startswith() to find words ending in ly, ness, and ment and words starting with un. I divided the counts by the total words and multiplied it by 1000 to compare the books fairly like in part 2. Austen had words ending in ly and ment, while Shelley had more words ending with ness and starting with un. The ly words weren’t all adverbs becuase there were words like fly and reply as well. I also removed blank lines and counted the lines with quotationmarks. Pride and Prejudice had about 13.95% and Frankenstein had about 6.84%. I used the stopword list from the slides and added more words on after seeing the results. Then I used counter and .most_common(10) to find the most common words left. Austen’s results had names of the characters in the book like Elizabeth and Darcy. Shelley’s had words like man, father, and life which suggest topcis about people and family. I used ChatGPT to help decide what extra stopwords to use after seeing how common the words still looked after using the stop list from the class slides.</p>
+</section>
+<section id="part-4-visualize-it" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-visualize-it">Part 4 — Visualize It</h2>
+<div id="ec0a2892" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Jane Austen"</span>, <span class="st">"Mary Shelley"</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        [book1_ly_rate, book2_ly_rate])</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words Ending in -ly"</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Author"</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Matches per 1,000 words"</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ly_comparison.png"</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw4_detective_gutenberg_loftis_emily_files/figure-html/cell-5-output-1.png" width="664" height="469" class="figure-img"></p>
+<p><img src="hw4_detective_gutenberg_loftis_emily_files/figure-html/cell-13-output-1.png" width="598" height="451" class="figure-img"></p>
 </figure>
 </div>
 </div>
+</div>
+<div id="e4e53fea" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>book1_freqs <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(book1_words).most_common()]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>book2_freqs <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(book2_words).most_common()]</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>book1_ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(book1_freqs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>book2_ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(book2_freqs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>plt.plot(book1_ranks, book1_freqs, label<span class="op">=</span><span class="st">"Jane Austen"</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>plt.plot(book2_ranks, book2_freqs, label<span class="op">=</span><span class="st">"Mary Shelley"</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Word Rank vs. Frequency"</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Rank"</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Frequency"</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">"log"</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"zipf_comparison.png"</span>)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw4_detective_gutenberg_loftis_emily_files/figure-html/cell-5-output-2.png" width="756" height="469" class="figure-img"></p>
+<p><img src="hw4_detective_gutenberg_loftis_emily_files/figure-html/cell-14-output-1.png" width="598" height="453" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>My code makes a bar chart comparing how often each author uses words ending in ly. Then it makes a Zipf plot by putting words in order from most to least common and plotting their rank and frequency on log scales. It adds titles, labels, and a legend, and saves both charts as image files. I used ChatGPT to troubleshoot a few things.</p>
+<p>I used matplotlib to make a bar chart comparing ly words for both authors. The author names are the labels, and the rates from part 3 are the heights of the bars. For the Zipf plot, I used counter to put all the words in order from most common to least common. I used pair[1] to get each word’s count and range() to create the ranks. I plotted both books on the same graph and made both axes log scales. I added titles, labels, and a legend and used .savefig() to save both charts. I used ChatGPT to help me fully understand how to use log with the charts.</p>
 </section>
 <section id="part-5-the-verdict" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-the-verdict">Part 5 — The Verdict</h2>
-<p>Austen uses more words ending in ly and ment, while Shelley uses more words ending in ness and starting with un. Frankenstein has a higher TTR in both comparisons. Pride and Prejudice has a lot of character names in its common words, while Frankenstein has words like life and father. I thought comparing the first 10,000 words was the most useful because both books were being compared at the same length. Average word length was the least useful because the results were almost the same. If I had to guess who wrote an anonymous chapter, I would check the rate of ly words first because there was a difference between the books, but that alone would not give me a definite answer.</p>
+<p>Like I previously mentioned Austen had higher rates of words ending in ly and ment, while Shelley had higher rates of words ending in ness and words starting with un. Austen’s common words had characters names like Darcy and Elizabeth while Shelley’s included man, father, and life. I think the ly rate was the most useful because there was a noticeable difference between the books. Average word length was the least useful because the results were almost the same. If I had an anonymous chapter, I would check the ly rate first, but I would need more evidence before deciding who wrote it.</p>
 </section>
-<section id="part-6-reflection" class="level2">
-<h2 class="anchored" data-anchor-id="part-6-reflection">Part 6 — Reflection</h2>
-<p>Setting up the graphs was a little difficult for me. I also got confused about what went in the terminal and what went in the file in VS Code. I thought it was surprising how similar the average word lengths were even though the books were different lengths. I used ChatGPT for help with troubleshooting. Setting up the graphs on my own was a little harder than following along in class.</p>
+<section id="part-6---reflection" class="level2">
+<h2 class="anchored" data-anchor-id="part-6---reflection">Part 6 - Reflection</h2>
+<p>Finding the right file paths for the books was a little difficult for me at first. I thought it was suprising how close the average word lengths were even though the books had different lengths and vocabulary. As logs have intimidated me in classes in the past they did scare me a little in this with the charts. I used ChatGPT to help me fix my file paths issue, and open the book texts, further explain some of the terms in the slides and especially help me with logs, and add the extra stop words to the list of stopwords.</p>
 <!-- -->
 
 </section>
@@ -807,190 +903,279 @@ Top 10 words after stopword removal: [('man', 137), ('myself', 136), ('father', 
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "HW 4 — Detective Gutenberg"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Emily Loftis"</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 1 — Setup and Cleaning</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"pride_and_prejudice.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        book1_lines <span class="op">=</span> f.readlines()</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"frankenstein.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        book2_lines <span class="op">=</span> f.readlines()</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">FileNotFoundError</span> <span class="im">as</span> error:</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Could not find a book file:"</span>, error)</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> []</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> []</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lines <span class="kw">in</span> [book1_lines, book2_lines]:</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> lines <span class="kw">and</span> <span class="kw">not</span> lines[<span class="dv">0</span>].startswith(<span class="st">"*** START OF"</span>):</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        lines.pop(<span class="dv">0</span>)</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lines:</span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>        lines.pop(<span class="dv">0</span>)</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> lines <span class="kw">and</span> <span class="kw">not</span> lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END OF"</span>):</span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        lines.pop()</span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lines:</span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        lines.pop()</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>book1_text <span class="op">=</span> <span class="st">""</span>.join(book1_lines).lower()</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>book2_text <span class="op">=</span> <span class="st">""</span>.join(book2_lines).lower()</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book1_text) <span class="cf">if</span> w]</span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book2_text) <span class="cf">if</span> w]</span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, <span class="bu">len</span>(book1_words), <span class="st">"words"</span>)</span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, <span class="bu">len</span>(book2_words), <span class="st">"words"</span>)</span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>My code reads both books and removes the Gutenberg information at the beginning and end using while loops. Then it puts the lines together, makes everything lowercase, and splits the text into words. It also removes any empty strings. I used ChatGPT to troubleshoot a few things.</span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 2 — Tokens, Types, and a Fair Comparison</span></span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words <span class="kw">in</span> [</span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words),</span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words)</span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> <span class="bu">len</span>(words)</span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>    types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(words))</span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>    ttr <span class="op">=</span> types <span class="op">/</span> tokens</span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>    first_10000 <span class="op">=</span> words[:<span class="dv">10000</span>]</span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>    sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(first_10000)) <span class="op">/</span> <span class="bu">len</span>(first_10000)</span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>    total_length <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word <span class="kw">in</span> words:</span>
-<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>        total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
-<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>    average_length <span class="op">=</span> total_length <span class="op">/</span> tokens</span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(title)</span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Tokens:"</span>, tokens)</span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Types:"</span>, types)</span>
-<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, <span class="bu">round</span>(ttr, <span class="dv">4</span>))</span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"First 10,000 words TTR:"</span>, <span class="bu">round</span>(sample_ttr, <span class="dv">4</span>))</span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Average word length:"</span>, <span class="bu">round</span>(average_length, <span class="dv">2</span>))</span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>My code counts the total words and the unique words in each book, then divides unique words by total words to get the TTR. It does the same thing with the first 10,000 words so the comparison is fairer. It also adds up the word lengths and divides by the total words to get the average word length. No AI use.</span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 3 — Affixes, Dialogue, and Common Words</span></span>
-<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> <span class="bu">set</span>(<span class="st">"""</span></span>
-<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a><span class="st">a an the and or but if as of at by for from in into on to with</span></span>
-<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a><span class="st">is am are was were be been being have has had do does did</span></span>
-<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a><span class="st">i me my mine we us our ours you your yours he him his she her hers</span></span>
-<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a><span class="st">it its they them their theirs this that these those</span></span>
-<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a><span class="st">not no so very too can could will would shall should may might must</span></span>
-<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a><span class="st">s t don didn isn wasn weren</span></span>
-<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a><span class="st">all any both each either every few more most much neither other</span></span>
-<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a><span class="st">several some such what whatever which who whom whose</span></span>
-<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a><span class="st">where when why how there here then than also just only</span></span>
-<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a><span class="st">now yet already again ever never always often sometimes</span></span>
-<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a><span class="st">before after during through about above below between</span></span>
-<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a><span class="st">up down out off over under further once</span></span>
-<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a><span class="st">because while although until unless whether</span></span>
-<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a><span class="st">one two mr mrs miss sir</span></span>
-<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>.split())</span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words, lines <span class="kw">in</span> [</span>
-<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words, book1_lines),</span>
-<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words, book2_lines)</span>
-<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(title)</span>
-<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a>    ly_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-ly words per 1,000:"</span>,</span>
-<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>          <span class="bu">round</span>(<span class="bu">len</span>(ly_words) <span class="op">/</span> <span class="bu">len</span>(words) <span class="op">*</span> <span class="dv">1000</span>, <span class="dv">2</span>))</span>
-<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Unique -ly words:"</span>, <span class="bu">sorted</span>(<span class="bu">set</span>(ly_words)))</span>
-<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> affix <span class="kw">in</span> [<span class="st">"ness"</span>, <span class="st">"ment"</span>, <span class="st">"un"</span>]:</span>
-<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> affix <span class="op">==</span> <span class="st">"un"</span>:</span>
-<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a>            matches <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.startswith(affix)]</span>
-<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a>            matches <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w.endswith(affix)]</span>
-<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(affix, <span class="st">"per 1,000:"</span>,</span>
-<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a>              <span class="bu">round</span>(<span class="bu">len</span>(matches) <span class="op">/</span> <span class="bu">len</span>(words) <span class="op">*</span> <span class="dv">1000</span>, <span class="dv">2</span>))</span>
-<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a>    dialogue_lines <span class="op">=</span> [</span>
-<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a>        line <span class="cf">for</span> line <span class="kw">in</span> lines</span>
-<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">"“"</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">"”"</span> <span class="kw">in</span> line</span>
-<span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb8-131"><a href="#cb8-131" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Lines containing quotation marks (%):"</span>,</span>
-<span id="cb8-132"><a href="#cb8-132" aria-hidden="true" tabindex="-1"></a>          <span class="bu">round</span>(<span class="bu">len</span>(dialogue_lines) <span class="op">/</span> <span class="bu">len</span>(lines) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">2</span>))</span>
-<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a>    content_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
-<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Top 10 words after stopword removal:"</span>,</span>
-<span id="cb8-136"><a href="#cb8-136" aria-hidden="true" tabindex="-1"></a>          Counter(content_words).most_common(<span class="dv">10</span>))</span>
-<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span>
-<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a>My code looks for words ending in ly, ness, and ment, and words starting with un. It turns the counts into rates per 1,000 words so I can compare the books even though they are different lengths. It also counts lines with quotation marks and finds the ten most common words after removing words from my stopword list. No AI use.</span>
-<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 4 — Visualize It</span></span>
-<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-144"><a href="#cb8-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb8-145"><a href="#cb8-145" aria-hidden="true" tabindex="-1"></a>book1_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb8-146"><a href="#cb8-146" aria-hidden="true" tabindex="-1"></a>book2_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
-<span id="cb8-147"><a href="#cb8-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a>ly_rates <span class="op">=</span> [</span>
-<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a>    <span class="bu">len</span>(book1_ly) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>,</span>
-<span id="cb8-150"><a href="#cb8-150" aria-hidden="true" tabindex="-1"></a>    <span class="bu">len</span>(book2_ly) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span></span>
-<span id="cb8-151"><a href="#cb8-151" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb8-152"><a href="#cb8-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Jane Austen"</span>, <span class="st">"Mary Shelley"</span>], ly_rates,</span>
-<span id="cb8-155"><a href="#cb8-155" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[<span class="st">"mediumpurple"</span>, <span class="st">"teal"</span>])</span>
-<span id="cb8-156"><a href="#cb8-156" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words Ending in -ly by Author"</span>)</span>
-<span id="cb8-157"><a href="#cb8-157" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Author"</span>)</span>
-<span id="cb8-158"><a href="#cb8-158" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"-ly words per 1,000 words"</span>)</span>
-<span id="cb8-159"><a href="#cb8-159" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb8-160"><a href="#cb8-160" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ly_comparison.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb8-161"><a href="#cb8-161" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
-<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-166"><a href="#cb8-166" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> title, words <span class="kw">in</span> [</span>
-<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Pride and Prejudice"</span>, book1_words),</span>
-<span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Frankenstein"</span>, book2_words)</span>
-<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a>    frequencies <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(words).most_common()]</span>
-<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a>    ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(frequencies) <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a>    plt.plot(ranks, frequencies, label<span class="op">=</span>title)</span>
-<span id="cb8-173"><a href="#cb8-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
-<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">"log"</span>)</span>
-<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Zipf Plot of Both Novels"</span>)</span>
-<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Word rank (log scale)"</span>)</span>
-<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Word frequency (log scale)"</span>)</span>
-<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb8-181"><a href="#cb8-181" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"zipf_comparison.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb8-182"><a href="#cb8-182" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
-<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a>My code makes a bar chart comparing how often each author uses words ending in ly. Then it makes a Zipf plot by putting words in order from most to least common and plotting their rank and frequency on log scales. It adds titles, labels, and a legend, and saves both charts as image files. I used ChatGPT to troubleshoot a few things.</span>
-<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-187"><a href="#cb8-187" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 5 — The Verdict</span></span>
-<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a>Austen uses more words ending in ly and ment, while Shelley uses more words ending in ness and starting with un. Frankenstein has a higher TTR in both comparisons. Pride and Prejudice has a lot of character names in its common words, while Frankenstein has words like life and father. I thought comparing the first 10,000 words was the most useful because both books were being compared at the same length. Average word length was the least useful because the results were almost the same. If I had to guess who wrote an anonymous chapter, I would check the rate of ly words first because there was a difference between the books, but that alone would not give me a definite answer.</span>
-<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 6 — Reflection</span></span>
-<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a>Setting up the graphs was a little difficult for me. I also got confused about what went in the terminal and what went in the file in VS Code. I thought it was surprising how similar the average word lengths were even though the books were different lengths. I used ChatGPT for help with troubleshooting. Setting up the graphs on my own was a little harder than following along in class. </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "HW 4 — Detective Gutenberg"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Emily Loftis"</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 1 — Setup and Cleaning</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"pride_and_prejudice.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        book1_lines <span class="op">=</span> f.readlines()</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"frankenstein.txt"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> f:</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        book2_lines <span class="op">=</span> f.readlines()</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, <span class="bu">len</span>(book1_lines), <span class="st">"lines"</span>)</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, <span class="bu">len</span>(book2_lines), <span class="st">"lines"</span>)</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">FileNotFoundError</span>:</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Couldn't find a book file. Check its name and location."</span>)</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book1_lines[<span class="dv">0</span>].startswith(<span class="st">"*** START"</span>):</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> book1_lines[<span class="dv">1</span>:]</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>book1_lines <span class="op">=</span> book1_lines[<span class="dv">1</span>:]</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book1_lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END"</span>):</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>    book1_lines <span class="op">=</span> book1_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>book1_lines <span class="op">=</span> book1_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_lines[:<span class="dv">5</span>])</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_lines[<span class="op">-</span><span class="dv">5</span>:])</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book2_lines[<span class="dv">0</span>].startswith(<span class="st">"*** START"</span>):</span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> book2_lines[<span class="dv">1</span>:]</span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>book2_lines <span class="op">=</span> book2_lines[<span class="dv">1</span>:]</span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">not</span> book2_lines[<span class="op">-</span><span class="dv">1</span>].startswith(<span class="st">"*** END"</span>):</span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>    book2_lines <span class="op">=</span> book2_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>book2_lines <span class="op">=</span> book2_lines[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_lines[:<span class="dv">5</span>])</span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_lines[<span class="op">-</span><span class="dv">5</span>:])</span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-66"><a href="#cb25-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-67"><a href="#cb25-67" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a>book1_text <span class="op">=</span> <span class="st">""</span>.join(book1_lines).lower()</span>
+<span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a>book2_text <span class="op">=</span> <span class="st">""</span>.join(book2_lines).lower()</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book1_text)</span>
+<span id="cb25-73"><a href="#cb25-73" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> re.split(<span class="vs">r"</span><span class="pp">[</span><span class="dv">\W</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, book2_text)</span>
+<span id="cb25-74"><a href="#cb25-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a>book1_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb25-76"><a href="#cb25-76" aria-hidden="true" tabindex="-1"></a>book2_words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb25-77"><a href="#cb25-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-78"><a href="#cb25-78" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_words[:<span class="dv">10</span>])</span>
+<span id="cb25-79"><a href="#cb25-79" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_words[:<span class="dv">10</span>])</span>
+<span id="cb25-80"><a href="#cb25-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-81"><a href="#cb25-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-82"><a href="#cb25-82" aria-hidden="true" tabindex="-1"></a>I opened the 2 books and used .readlines() to save each book as a list of lines. I then used while loops to remove many of the first line and last lines until they reacehd the markers. After, I removed the markers. I joined the other lines that were left and made the text lowercase. I used re.split() to separate it into words. Then I removed the empty strings. I used ChatGPT to understand how to use "while" and fix a file-path problem.</span>
+<span id="cb25-83"><a href="#cb25-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-84"><a href="#cb25-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-85"><a href="#cb25-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-86"><a href="#cb25-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 2 — Tokens, Types, and a Fair Comparison</span></span>
+<span id="cb25-87"><a href="#cb25-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-90"><a href="#cb25-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-91"><a href="#cb25-91" aria-hidden="true" tabindex="-1"></a>book1_tokens <span class="op">=</span> <span class="bu">len</span>(book1_words)</span>
+<span id="cb25-92"><a href="#cb25-92" aria-hidden="true" tabindex="-1"></a>book2_tokens <span class="op">=</span> <span class="bu">len</span>(book2_words)</span>
+<span id="cb25-93"><a href="#cb25-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-94"><a href="#cb25-94" aria-hidden="true" tabindex="-1"></a>book1_types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book1_words))</span>
+<span id="cb25-95"><a href="#cb25-95" aria-hidden="true" tabindex="-1"></a>book2_types <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book2_words))</span>
+<span id="cb25-96"><a href="#cb25-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-97"><a href="#cb25-97" aria-hidden="true" tabindex="-1"></a>book1_ttr <span class="op">=</span> book1_types <span class="op">/</span> book1_tokens</span>
+<span id="cb25-98"><a href="#cb25-98" aria-hidden="true" tabindex="-1"></a>book2_ttr <span class="op">=</span> book2_types <span class="op">/</span> book2_tokens</span>
+<span id="cb25-99"><a href="#cb25-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-100"><a href="#cb25-100" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice"</span>)</span>
+<span id="cb25-101"><a href="#cb25-101" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tokens:"</span>, book1_tokens)</span>
+<span id="cb25-102"><a href="#cb25-102" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Types:"</span>, book1_types)</span>
+<span id="cb25-103"><a href="#cb25-103" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, book1_ttr)</span>
+<span id="cb25-104"><a href="#cb25-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-105"><a href="#cb25-105" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein"</span>)</span>
+<span id="cb25-106"><a href="#cb25-106" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tokens:"</span>, book2_tokens)</span>
+<span id="cb25-107"><a href="#cb25-107" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Types:"</span>, book2_types)</span>
+<span id="cb25-108"><a href="#cb25-108" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Full-book TTR:"</span>, book2_ttr)</span>
+<span id="cb25-109"><a href="#cb25-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-110"><a href="#cb25-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-113"><a href="#cb25-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-114"><a href="#cb25-114" aria-hidden="true" tabindex="-1"></a>book1_sample <span class="op">=</span> book1_words[:<span class="dv">10000</span>]</span>
+<span id="cb25-115"><a href="#cb25-115" aria-hidden="true" tabindex="-1"></a>book2_sample <span class="op">=</span> book2_words[:<span class="dv">10000</span>]</span>
+<span id="cb25-116"><a href="#cb25-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-117"><a href="#cb25-117" aria-hidden="true" tabindex="-1"></a>book1_sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book1_sample)) <span class="op">/</span> <span class="bu">len</span>(book1_sample)</span>
+<span id="cb25-118"><a href="#cb25-118" aria-hidden="true" tabindex="-1"></a>book2_sample_ttr <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(book2_sample)) <span class="op">/</span> <span class="bu">len</span>(book2_sample)</span>
+<span id="cb25-119"><a href="#cb25-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-120"><a href="#cb25-120" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — first 10,000 words TTR:"</span>, book1_sample_ttr)</span>
+<span id="cb25-121"><a href="#cb25-121" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — first 10,000 words TTR:"</span>, book2_sample_ttr)</span>
+<span id="cb25-122"><a href="#cb25-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-123"><a href="#cb25-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-126"><a href="#cb25-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-127"><a href="#cb25-127" aria-hidden="true" tabindex="-1"></a>book1_total_length <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-128"><a href="#cb25-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-129"><a href="#cb25-129" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word <span class="kw">in</span> book1_words:</span>
+<span id="cb25-130"><a href="#cb25-130" aria-hidden="true" tabindex="-1"></a>    book1_total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
+<span id="cb25-131"><a href="#cb25-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-132"><a href="#cb25-132" aria-hidden="true" tabindex="-1"></a>book1_average_length <span class="op">=</span> book1_total_length <span class="op">/</span> book1_tokens</span>
+<span id="cb25-133"><a href="#cb25-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-134"><a href="#cb25-134" aria-hidden="true" tabindex="-1"></a>book2_total_length <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-135"><a href="#cb25-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-136"><a href="#cb25-136" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word <span class="kw">in</span> book2_words:</span>
+<span id="cb25-137"><a href="#cb25-137" aria-hidden="true" tabindex="-1"></a>    book2_total_length <span class="op">+=</span> <span class="bu">len</span>(word)</span>
+<span id="cb25-138"><a href="#cb25-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-139"><a href="#cb25-139" aria-hidden="true" tabindex="-1"></a>book2_average_length <span class="op">=</span> book2_total_length <span class="op">/</span> book2_tokens</span>
+<span id="cb25-140"><a href="#cb25-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-141"><a href="#cb25-141" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — average word length:"</span>, book1_average_length)</span>
+<span id="cb25-142"><a href="#cb25-142" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — average word length:"</span>, book2_average_length)</span>
+<span id="cb25-143"><a href="#cb25-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-144"><a href="#cb25-144" aria-hidden="true" tabindex="-1"></a>I used len() to count the tokens and len(set()) to count the types with no duplicates. Then calculated TTR dividing types by tokens. Frankenstein had the higher TTR of the books and the first 10,000 words. Comparing 10,000 words from both books is more fair because the texts are the same length, so it reduces the effect of text length on TTR. For the calculation of the average word length, I used a loop to add each word's length and divided the total by the number of the words. The average word lengths were almost the same. I used AI to troubleshoot the error when I left out necesary parenthesis and to check I correctly used only the 10,000 words of each book.</span>
+<span id="cb25-145"><a href="#cb25-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-146"><a href="#cb25-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-147"><a href="#cb25-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 3 — Affixes, Dialogue, and Common Words</span></span>
+<span id="cb25-148"><a href="#cb25-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-151"><a href="#cb25-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-152"><a href="#cb25-152" aria-hidden="true" tabindex="-1"></a>book1_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
+<span id="cb25-153"><a href="#cb25-153" aria-hidden="true" tabindex="-1"></a>book2_ly <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ly"</span>)]</span>
+<span id="cb25-154"><a href="#cb25-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-155"><a href="#cb25-155" aria-hidden="true" tabindex="-1"></a>book1_ly_rate <span class="op">=</span> <span class="bu">len</span>(book1_ly) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span></span>
+<span id="cb25-156"><a href="#cb25-156" aria-hidden="true" tabindex="-1"></a>book2_ly_rate <span class="op">=</span> <span class="bu">len</span>(book2_ly) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span></span>
+<span id="cb25-157"><a href="#cb25-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-158"><a href="#cb25-158" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ly words per 1,000:"</span>, book1_ly_rate)</span>
+<span id="cb25-159"><a href="#cb25-159" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ly words per 1,000:"</span>, book2_ly_rate)</span>
+<span id="cb25-160"><a href="#cb25-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-161"><a href="#cb25-161" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_ly[:<span class="dv">30</span>])</span>
+<span id="cb25-162"><a href="#cb25-162" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_ly[:<span class="dv">30</span>])</span>
+<span id="cb25-163"><a href="#cb25-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-164"><a href="#cb25-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-167"><a href="#cb25-167" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-168"><a href="#cb25-168" aria-hidden="true" tabindex="-1"></a>book1_ness <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ness"</span>)]</span>
+<span id="cb25-169"><a href="#cb25-169" aria-hidden="true" tabindex="-1"></a>book2_ness <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ness"</span>)]</span>
+<span id="cb25-170"><a href="#cb25-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-171"><a href="#cb25-171" aria-hidden="true" tabindex="-1"></a>book1_ment <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.endswith(<span class="st">"ment"</span>)]</span>
+<span id="cb25-172"><a href="#cb25-172" aria-hidden="true" tabindex="-1"></a>book2_ment <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.endswith(<span class="st">"ment"</span>)]</span>
+<span id="cb25-173"><a href="#cb25-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-174"><a href="#cb25-174" aria-hidden="true" tabindex="-1"></a>book1_un <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w.startswith(<span class="st">"un"</span>)]</span>
+<span id="cb25-175"><a href="#cb25-175" aria-hidden="true" tabindex="-1"></a>book2_un <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w.startswith(<span class="st">"un"</span>)]</span>
+<span id="cb25-176"><a href="#cb25-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-177"><a href="#cb25-177" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ness per 1,000:"</span>,</span>
+<span id="cb25-178"><a href="#cb25-178" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_ness) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-179"><a href="#cb25-179" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ness per 1,000:"</span>,</span>
+<span id="cb25-180"><a href="#cb25-180" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_ness) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-181"><a href="#cb25-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-182"><a href="#cb25-182" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — ment per 1,000:"</span>,</span>
+<span id="cb25-183"><a href="#cb25-183" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_ment) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-184"><a href="#cb25-184" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — ment per 1,000:"</span>,</span>
+<span id="cb25-185"><a href="#cb25-185" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_ment) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-186"><a href="#cb25-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-187"><a href="#cb25-187" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — un per 1,000:"</span>,</span>
+<span id="cb25-188"><a href="#cb25-188" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book1_un) <span class="op">/</span> <span class="bu">len</span>(book1_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-189"><a href="#cb25-189" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — un per 1,000:"</span>,</span>
+<span id="cb25-190"><a href="#cb25-190" aria-hidden="true" tabindex="-1"></a>      <span class="bu">len</span>(book2_un) <span class="op">/</span> <span class="bu">len</span>(book2_words) <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb25-191"><a href="#cb25-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-192"><a href="#cb25-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-195"><a href="#cb25-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-196"><a href="#cb25-196" aria-hidden="true" tabindex="-1"></a>book1_nonempty <span class="op">=</span> [line <span class="cf">for</span> line <span class="kw">in</span> book1_lines <span class="cf">if</span> line.strip() <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb25-197"><a href="#cb25-197" aria-hidden="true" tabindex="-1"></a>book2_nonempty <span class="op">=</span> [line <span class="cf">for</span> line <span class="kw">in</span> book2_lines <span class="cf">if</span> line.strip() <span class="op">!=</span> <span class="st">""</span>]</span>
+<span id="cb25-198"><a href="#cb25-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-199"><a href="#cb25-199" aria-hidden="true" tabindex="-1"></a>book1_dialogue <span class="op">=</span> [</span>
+<span id="cb25-200"><a href="#cb25-200" aria-hidden="true" tabindex="-1"></a>    line <span class="cf">for</span> line <span class="kw">in</span> book1_nonempty</span>
+<span id="cb25-201"><a href="#cb25-201" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'“'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'‘'</span> <span class="kw">in</span> line</span>
+<span id="cb25-202"><a href="#cb25-202" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-203"><a href="#cb25-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-204"><a href="#cb25-204" aria-hidden="true" tabindex="-1"></a>book2_dialogue <span class="op">=</span> [</span>
+<span id="cb25-205"><a href="#cb25-205" aria-hidden="true" tabindex="-1"></a>    line <span class="cf">for</span> line <span class="kw">in</span> book2_nonempty</span>
+<span id="cb25-206"><a href="#cb25-206" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'"'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'“'</span> <span class="kw">in</span> line <span class="kw">or</span> <span class="st">'‘'</span> <span class="kw">in</span> line</span>
+<span id="cb25-207"><a href="#cb25-207" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-208"><a href="#cb25-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-209"><a href="#cb25-209" aria-hidden="true" tabindex="-1"></a>book1_dialogue_percent <span class="op">=</span> <span class="bu">len</span>(book1_dialogue) <span class="op">/</span> <span class="bu">len</span>(book1_nonempty) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb25-210"><a href="#cb25-210" aria-hidden="true" tabindex="-1"></a>book2_dialogue_percent <span class="op">=</span> <span class="bu">len</span>(book2_dialogue) <span class="op">/</span> <span class="bu">len</span>(book2_nonempty) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb25-211"><a href="#cb25-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-212"><a href="#cb25-212" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice — dialogue lines (%):"</span>, book1_dialogue_percent)</span>
+<span id="cb25-213"><a href="#cb25-213" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein — dialogue lines (%):"</span>, book2_dialogue_percent)</span>
+<span id="cb25-214"><a href="#cb25-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-215"><a href="#cb25-215" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book1_dialogue[:<span class="dv">3</span>])</span>
+<span id="cb25-216"><a href="#cb25-216" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(book2_dialogue[:<span class="dv">3</span>])</span>
+<span id="cb25-217"><a href="#cb25-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-218"><a href="#cb25-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-221"><a href="#cb25-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-222"><a href="#cb25-222" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb25-223"><a href="#cb25-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-224"><a href="#cb25-224" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [</span>
+<span id="cb25-225"><a href="#cb25-225" aria-hidden="true" tabindex="-1"></a>    <span class="st">"the"</span>, <span class="st">"to"</span>, <span class="st">"and"</span>, <span class="st">"of"</span>, <span class="st">"a"</span>, <span class="st">"her"</span>, <span class="st">"i"</span>, <span class="st">"in"</span>, <span class="st">"was"</span>, <span class="st">"it"</span>,</span>
+<span id="cb25-226"><a href="#cb25-226" aria-hidden="true" tabindex="-1"></a>    <span class="st">"she"</span>, <span class="st">"he"</span>, <span class="st">"be"</span>, <span class="st">"that"</span>, <span class="st">"you"</span>, <span class="st">"not"</span>, <span class="st">"had"</span>, <span class="st">"as"</span>, <span class="st">"his"</span>, <span class="st">"for"</span>,</span>
+<span id="cb25-227"><a href="#cb25-227" aria-hidden="true" tabindex="-1"></a>    <span class="st">"with"</span>, <span class="st">"is"</span>, <span class="st">"have"</span>, <span class="st">"but"</span>, <span class="st">"at"</span>, <span class="st">"so"</span>, <span class="st">"all"</span>, <span class="st">"my"</span>, <span class="st">"been"</span>, <span class="st">"him"</span>,</span>
+<span id="cb25-228"><a href="#cb25-228" aria-hidden="true" tabindex="-1"></a>    <span class="st">"on"</span>, <span class="st">"by"</span>, <span class="st">"could"</span>, <span class="st">"would"</span>, <span class="st">"very"</span>, <span class="st">"no"</span>, <span class="st">"what"</span>, <span class="st">"which"</span>, <span class="st">"they"</span>,</span>
+<span id="cb25-229"><a href="#cb25-229" aria-hidden="true" tabindex="-1"></a>    <span class="st">"were"</span>, <span class="st">"there"</span>, <span class="st">"me"</span>, <span class="st">"an"</span>, <span class="st">"must"</span>, <span class="st">"this"</span>, <span class="st">"said"</span>, <span class="st">"from"</span>, <span class="st">"or"</span>,</span>
+<span id="cb25-230"><a href="#cb25-230" aria-hidden="true" tabindex="-1"></a>    <span class="st">"will"</span>, <span class="st">"any"</span>, <span class="st">"much"</span>, <span class="st">"than"</span>, <span class="st">"such"</span>, <span class="st">"their"</span>, <span class="st">"them"</span>, <span class="st">"if"</span>, <span class="st">"do"</span>,</span>
+<span id="cb25-231"><a href="#cb25-231" aria-hidden="true" tabindex="-1"></a>    <span class="st">"did"</span>, <span class="st">"one"</span>, <span class="st">"when"</span>, <span class="st">"your"</span>, <span class="st">"more"</span>, <span class="st">"are"</span>, <span class="st">"we"</span>, <span class="st">"who"</span>, <span class="st">"up"</span>,</span>
+<span id="cb25-232"><a href="#cb25-232" aria-hidden="true" tabindex="-1"></a>    <span class="st">"out"</span>, <span class="st">"down"</span>, <span class="st">"into"</span>, <span class="st">"s"</span>, <span class="st">"t"</span></span>
+<span id="cb25-233"><a href="#cb25-233" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-234"><a href="#cb25-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-235"><a href="#cb25-235" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> stopwords <span class="op">+</span> [</span>
+<span id="cb25-236"><a href="#cb25-236" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mr"</span>, <span class="st">"mrs"</span>, <span class="st">"miss"</span>, <span class="st">"am"</span>, <span class="st">"should"</span>, <span class="st">"now"</span>, <span class="st">"these"</span>,</span>
+<span id="cb25-237"><a href="#cb25-237" aria-hidden="true" tabindex="-1"></a>    <span class="st">"yet"</span>, <span class="st">"some"</span>, <span class="st">"before"</span>, <span class="st">"myself"</span>,</span>
+<span id="cb25-238"><a href="#cb25-238" aria-hidden="true" tabindex="-1"></a>    <span class="st">"has"</span>, <span class="st">"though"</span>, <span class="st">"herself"</span>, <span class="st">"how"</span>, <span class="st">"upon"</span>, <span class="st">"our"</span>,</span>
+<span id="cb25-239"><a href="#cb25-239" aria-hidden="true" tabindex="-1"></a>    <span class="st">"its"</span>, <span class="st">"only"</span>, <span class="st">"every"</span>, <span class="st">"then"</span></span>
+<span id="cb25-240"><a href="#cb25-240" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-241"><a href="#cb25-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-242"><a href="#cb25-242" aria-hidden="true" tabindex="-1"></a>book1_content <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book1_words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
+<span id="cb25-243"><a href="#cb25-243" aria-hidden="true" tabindex="-1"></a>book2_content <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> book2_words <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords]</span>
+<span id="cb25-244"><a href="#cb25-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-245"><a href="#cb25-245" aria-hidden="true" tabindex="-1"></a>book1_counts <span class="op">=</span> Counter(book1_content)</span>
+<span id="cb25-246"><a href="#cb25-246" aria-hidden="true" tabindex="-1"></a>book2_counts <span class="op">=</span> Counter(book2_content)</span>
+<span id="cb25-247"><a href="#cb25-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-248"><a href="#cb25-248" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pride and Prejudice:"</span>, book1_counts.most_common(<span class="dv">10</span>))</span>
+<span id="cb25-249"><a href="#cb25-249" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Frankenstein:"</span>, book2_counts.most_common(<span class="dv">10</span>))</span>
+<span id="cb25-250"><a href="#cb25-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-251"><a href="#cb25-251" aria-hidden="true" tabindex="-1"></a>I used .endswith() and .startswith() to find words ending in ly, ness, and ment and words starting with un. I divided the counts by the total words and multiplied it by 1000 to compare the books fairly like in part 2. Austen had words ending in ly and ment, while Shelley had more words ending with ness and starting with un. The ly words weren't all adverbs becuase there were words like fly and reply as well. I also removed blank lines and counted the lines with quotationmarks. Pride and Prejudice had about 13.95% and Frankenstein had about 6.84%. I used the stopword list from the slides and added more words on after seeing the results. Then I used counter and .most_common(10) to find the most common words left. Austen's results had names of the characters in the book like Elizabeth and Darcy. Shelley's had words like man, father, and life which suggest topcis about people and family. I used ChatGPT to help decide what extra stopwords to use after seeing how common the words still looked after using the stop list from the class slides.</span>
+<span id="cb25-252"><a href="#cb25-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-253"><a href="#cb25-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-254"><a href="#cb25-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 4 — Visualize It</span></span>
+<span id="cb25-255"><a href="#cb25-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-258"><a href="#cb25-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-259"><a href="#cb25-259" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb25-260"><a href="#cb25-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-261"><a href="#cb25-261" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Jane Austen"</span>, <span class="st">"Mary Shelley"</span>],</span>
+<span id="cb25-262"><a href="#cb25-262" aria-hidden="true" tabindex="-1"></a>        [book1_ly_rate, book2_ly_rate])</span>
+<span id="cb25-263"><a href="#cb25-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-264"><a href="#cb25-264" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words Ending in -ly"</span>)</span>
+<span id="cb25-265"><a href="#cb25-265" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Author"</span>)</span>
+<span id="cb25-266"><a href="#cb25-266" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Matches per 1,000 words"</span>)</span>
+<span id="cb25-267"><a href="#cb25-267" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ly_comparison.png"</span>)</span>
+<span id="cb25-268"><a href="#cb25-268" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb25-269"><a href="#cb25-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-272"><a href="#cb25-272" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb25-273"><a href="#cb25-273" aria-hidden="true" tabindex="-1"></a>book1_freqs <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(book1_words).most_common()]</span>
+<span id="cb25-274"><a href="#cb25-274" aria-hidden="true" tabindex="-1"></a>book2_freqs <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> Counter(book2_words).most_common()]</span>
+<span id="cb25-275"><a href="#cb25-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-276"><a href="#cb25-276" aria-hidden="true" tabindex="-1"></a>book1_ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(book1_freqs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb25-277"><a href="#cb25-277" aria-hidden="true" tabindex="-1"></a>book2_ranks <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(book2_freqs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb25-278"><a href="#cb25-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-279"><a href="#cb25-279" aria-hidden="true" tabindex="-1"></a>plt.plot(book1_ranks, book1_freqs, label<span class="op">=</span><span class="st">"Jane Austen"</span>)</span>
+<span id="cb25-280"><a href="#cb25-280" aria-hidden="true" tabindex="-1"></a>plt.plot(book2_ranks, book2_freqs, label<span class="op">=</span><span class="st">"Mary Shelley"</span>)</span>
+<span id="cb25-281"><a href="#cb25-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-282"><a href="#cb25-282" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Word Rank vs. Frequency"</span>)</span>
+<span id="cb25-283"><a href="#cb25-283" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Rank"</span>)</span>
+<span id="cb25-284"><a href="#cb25-284" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Frequency"</span>)</span>
+<span id="cb25-285"><a href="#cb25-285" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
+<span id="cb25-286"><a href="#cb25-286" aria-hidden="true" tabindex="-1"></a>plt.yscale(<span class="st">"log"</span>)</span>
+<span id="cb25-287"><a href="#cb25-287" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb25-288"><a href="#cb25-288" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"zipf_comparison.png"</span>)</span>
+<span id="cb25-289"><a href="#cb25-289" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb25-290"><a href="#cb25-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-291"><a href="#cb25-291" aria-hidden="true" tabindex="-1"></a>I used matplotlib to make a bar chart comparing ly words for both authors. The author names are the labels, and the rates from part 3 are the heights of the bars. For the Zipf plot, I used counter to put all the words in order from most common to least common. I used pair<span class="co">[</span><span class="ot">1</span><span class="co">]</span> to get each word's count and range() to create the ranks. I plotted both books on the same graph and made both axes log scales. I added titles, labels, and a legend and used .savefig() to save both charts. I used ChatGPT to help me fully understand how to use log with the charts.</span>
+<span id="cb25-292"><a href="#cb25-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-293"><a href="#cb25-293" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 5 — The Verdict</span></span>
+<span id="cb25-294"><a href="#cb25-294" aria-hidden="true" tabindex="-1"></a>Like I previously mentioned Austen had higher rates of words ending in ly and ment, while Shelley had higher rates of words ending in ness and words starting with un. Austen's common words had characters names like Darcy and Elizabeth while Shelley's included man, father, and life. I think the ly rate was the most useful because there was a noticeable difference between the books. Average word length was the least useful because the results were almost the same. If I had an anonymous chapter, I would check the ly rate first, but I would need more evidence before deciding who wrote it.</span>
+<span id="cb25-295"><a href="#cb25-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-296"><a href="#cb25-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-297"><a href="#cb25-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 6 - Reflection</span></span>
+<span id="cb25-298"><a href="#cb25-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-299"><a href="#cb25-299" aria-hidden="true" tabindex="-1"></a>Finding the right file paths for the books was a little difficult for me at first. I thought it was suprising how close the average word lengths were even though the books had different lengths and vocabulary. As logs have intimidated me in classes in the past they did scare me a little in this with the charts. I used ChatGPT to help me fix my file paths issue, and open the book texts, further explain some of the terms in the slides and especially help me with logs, and add the extra stop words to the list of stopwords.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

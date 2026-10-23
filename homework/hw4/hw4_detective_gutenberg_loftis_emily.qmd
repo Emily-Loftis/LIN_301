@@ -11,10 +11,6 @@ jupyter: python3
 ## Part 1 — Setup and Cleaning
 
 ```{python}
-import re
-from collections import Counter
-import matplotlib.pyplot as plt
-
 try:
     with open("pride_and_prejudice.txt", encoding="utf-8") as f:
         book1_lines = f.readlines()
@@ -22,163 +18,256 @@ try:
     with open("frankenstein.txt", encoding="utf-8") as f:
         book2_lines = f.readlines()
 
-except FileNotFoundError as error:
-    print("Could not find a book file:", error)
-    book1_lines = []
-    book2_lines = []
+    print("Pride and Prejudice:", len(book1_lines), "lines")
+    print("Frankenstein:", len(book2_lines), "lines")
 
-for lines in [book1_lines, book2_lines]:
-    while lines and not lines[0].startswith("*** START OF"):
-        lines.pop(0)
-    if lines:
-        lines.pop(0)
+except FileNotFoundError:
+    print("Couldn't find a book file. Check its name and location.")
+```
 
-    while lines and not lines[-1].startswith("*** END OF"):
-        lines.pop()
-    if lines:
-        lines.pop()
+```{python}
+while not book1_lines[0].startswith("*** START"):
+    book1_lines = book1_lines[1:]
+
+book1_lines = book1_lines[1:]
+
+while not book1_lines[-1].startswith("*** END"):
+    book1_lines = book1_lines[:-1]
+
+book1_lines = book1_lines[:-1]
+
+print(book1_lines[:5])
+print(book1_lines[-5:])
+```
+
+```{python}
+while not book2_lines[0].startswith("*** START"):
+    book2_lines = book2_lines[1:]
+
+book2_lines = book2_lines[1:]
+
+while not book2_lines[-1].startswith("*** END"):
+    book2_lines = book2_lines[:-1]
+
+book2_lines = book2_lines[:-1]
+
+print(book2_lines[:5])
+print(book2_lines[-5:])
+```
+
+```{python}
+import re
 
 book1_text = "".join(book1_lines).lower()
 book2_text = "".join(book2_lines).lower()
 
-book1_words = [w for w in re.split(r"[\W]+", book1_text) if w]
-book2_words = [w for w in re.split(r"[\W]+", book2_text) if w]
+book1_words = re.split(r"[\W]+", book1_text)
+book2_words = re.split(r"[\W]+", book2_text)
 
-print("Pride and Prejudice:", len(book1_words), "words")
-print("Frankenstein:", len(book2_words), "words")
+book1_words = [w for w in book1_words if w != ""]
+book2_words = [w for w in book2_words if w != ""]
+
+print(book1_words[:10])
+print(book2_words[:10])
 ```
-My code reads both books and removes the Gutenberg information at the beginning and end using while loops. Then it puts the lines together, makes everything lowercase, and splits the text into words. It also removes any empty strings. I used ChatGPT to troubleshoot a few things.
+
+I opened the 2 books and used .readlines() to save each book as a list of lines. I then used while loops to remove many of the first line and last lines until they reacehd the markers. After, I removed the markers. I joined the other lines that were left and made the text lowercase. I used re.split() to separate it into words. Then I removed the empty strings. I used ChatGPT to understand how to use "while" and fix a file-path problem.
+
+
 
 ## Part 2 — Tokens, Types, and a Fair Comparison
 
 ```{python}
-for title, words in [
-    ("Pride and Prejudice", book1_words),
-    ("Frankenstein", book2_words)
-]:
-    tokens = len(words)
-    types = len(set(words))
-    ttr = types / tokens
+book1_tokens = len(book1_words)
+book2_tokens = len(book2_words)
 
-    first_10000 = words[:10000]
-    sample_ttr = len(set(first_10000)) / len(first_10000)
+book1_types = len(set(book1_words))
+book2_types = len(set(book2_words))
 
-    total_length = 0
-    for word in words:
-        total_length += len(word)
-    average_length = total_length / tokens
+book1_ttr = book1_types / book1_tokens
+book2_ttr = book2_types / book2_tokens
 
-    print(title)
-    print("Tokens:", tokens)
-    print("Types:", types)
-    print("Full-book TTR:", round(ttr, 4))
-    print("First 10,000 words TTR:", round(sample_ttr, 4))
-    print("Average word length:", round(average_length, 2))
-    print()
+print("Pride and Prejudice")
+print("Tokens:", book1_tokens)
+print("Types:", book1_types)
+print("Full-book TTR:", book1_ttr)
+
+print("Frankenstein")
+print("Tokens:", book2_tokens)
+print("Types:", book2_types)
+print("Full-book TTR:", book2_ttr)
 ```
-My code counts the total words and the unique words in each book, then divides unique words by total words to get the TTR. It does the same thing with the first 10,000 words so the comparison is fairer. It also adds up the word lengths and divides by the total words to get the average word length. No AI use.
-
-## Part 3 — Affixes, Dialogue, and Common Words
 
 ```{python}
-stopwords = set("""
-a an the and or but if as of at by for from in into on to with
-is am are was were be been being have has had do does did
-i me my mine we us our ours you your yours he him his she her hers
-it its they them their theirs this that these those
-not no so very too can could will would shall should may might must
-s t don didn isn wasn weren
-all any both each either every few more most much neither other
-several some such what whatever which who whom whose
-where when why how there here then than also just only
-now yet already again ever never always often sometimes
-before after during through about above below between
-up down out off over under further once
-because while although until unless whether
-one two mr mrs miss sir
-""".split())
+book1_sample = book1_words[:10000]
+book2_sample = book2_words[:10000]
 
-for title, words, lines in [
-    ("Pride and Prejudice", book1_words, book1_lines),
-    ("Frankenstein", book2_words, book2_lines)
-]:
-    print(title)
+book1_sample_ttr = len(set(book1_sample)) / len(book1_sample)
+book2_sample_ttr = len(set(book2_sample)) / len(book2_sample)
 
-    ly_words = [w for w in words if w.endswith("ly")]
-    print("-ly words per 1,000:",
-          round(len(ly_words) / len(words) * 1000, 2))
-    print("Unique -ly words:", sorted(set(ly_words)))
-
-    for affix in ["ness", "ment", "un"]:
-        if affix == "un":
-            matches = [w for w in words if w.startswith(affix)]
-        else:
-            matches = [w for w in words if w.endswith(affix)]
-
-        print(affix, "per 1,000:",
-              round(len(matches) / len(words) * 1000, 2))
-
-    dialogue_lines = [
-        line for line in lines
-        if '"' in line or "“" in line or "”" in line
-    ]
-    print("Lines containing quotation marks (%):",
-          round(len(dialogue_lines) / len(lines) * 100, 2))
-
-    content_words = [w for w in words if w not in stopwords]
-    print("Top 10 words after stopword removal:",
-          Counter(content_words).most_common(10))
-    print()
+print("Pride and Prejudice — first 10,000 words TTR:", book1_sample_ttr)
+print("Frankenstein — first 10,000 words TTR:", book2_sample_ttr)
 ```
-My code looks for words ending in ly, ness, and ment, and words starting with un. It turns the counts into rates per 1,000 words so I can compare the books even though they are different lengths. It also counts lines with quotation marks and finds the ten most common words after removing words from my stopword list. No AI use.
-## Part 4 — Visualize It
+
+```{python}
+book1_total_length = 0
+
+for word in book1_words:
+    book1_total_length += len(word)
+
+book1_average_length = book1_total_length / book1_tokens
+
+book2_total_length = 0
+
+for word in book2_words:
+    book2_total_length += len(word)
+
+book2_average_length = book2_total_length / book2_tokens
+
+print("Pride and Prejudice — average word length:", book1_average_length)
+print("Frankenstein — average word length:", book2_average_length)
+```
+I used len() to count the tokens and len(set()) to count the types with no duplicates. Then calculated TTR dividing types by tokens. Frankenstein had the higher TTR of the books and the first 10,000 words. Comparing 10,000 words from both books is more fair because the texts are the same length, so it reduces the effect of text length on TTR. For the calculation of the average word length, I used a loop to add each word's length and divided the total by the number of the words. The average word lengths were almost the same. I used AI to troubleshoot the error when I left out necesary parenthesis and to check I correctly used only the 10,000 words of each book.
+
+
+## Part 3 — Affixes, Dialogue, and Common Words
 
 ```{python}
 book1_ly = [w for w in book1_words if w.endswith("ly")]
 book2_ly = [w for w in book2_words if w.endswith("ly")]
 
-ly_rates = [
-    len(book1_ly) / len(book1_words) * 1000,
-    len(book2_ly) / len(book2_words) * 1000
+book1_ly_rate = len(book1_ly) / len(book1_words) * 1000
+book2_ly_rate = len(book2_ly) / len(book2_words) * 1000
+
+print("Pride and Prejudice — ly words per 1,000:", book1_ly_rate)
+print("Frankenstein — ly words per 1,000:", book2_ly_rate)
+
+print(book1_ly[:30])
+print(book2_ly[:30])
+```
+
+```{python}
+book1_ness = [w for w in book1_words if w.endswith("ness")]
+book2_ness = [w for w in book2_words if w.endswith("ness")]
+
+book1_ment = [w for w in book1_words if w.endswith("ment")]
+book2_ment = [w for w in book2_words if w.endswith("ment")]
+
+book1_un = [w for w in book1_words if w.startswith("un")]
+book2_un = [w for w in book2_words if w.startswith("un")]
+
+print("Pride and Prejudice — ness per 1,000:",
+      len(book1_ness) / len(book1_words) * 1000)
+print("Frankenstein — ness per 1,000:",
+      len(book2_ness) / len(book2_words) * 1000)
+
+print("Pride and Prejudice — ment per 1,000:",
+      len(book1_ment) / len(book1_words) * 1000)
+print("Frankenstein — ment per 1,000:",
+      len(book2_ment) / len(book2_words) * 1000)
+
+print("Pride and Prejudice — un per 1,000:",
+      len(book1_un) / len(book1_words) * 1000)
+print("Frankenstein — un per 1,000:",
+      len(book2_un) / len(book2_words) * 1000)
+```
+
+```{python}
+book1_nonempty = [line for line in book1_lines if line.strip() != ""]
+book2_nonempty = [line for line in book2_lines if line.strip() != ""]
+
+book1_dialogue = [
+    line for line in book1_nonempty
+    if '"' in line or '“' in line or '‘' in line
 ]
 
-plt.figure(figsize=(7, 5))
-plt.bar(["Jane Austen", "Mary Shelley"], ly_rates,
-        color=["mediumpurple", "teal"])
-plt.title("Words Ending in -ly by Author")
+book2_dialogue = [
+    line for line in book2_nonempty
+    if '"' in line or '“' in line or '‘' in line
+]
+
+book1_dialogue_percent = len(book1_dialogue) / len(book1_nonempty) * 100
+book2_dialogue_percent = len(book2_dialogue) / len(book2_nonempty) * 100
+
+print("Pride and Prejudice — dialogue lines (%):", book1_dialogue_percent)
+print("Frankenstein — dialogue lines (%):", book2_dialogue_percent)
+
+print(book1_dialogue[:3])
+print(book2_dialogue[:3])
+```
+
+```{python}
+from collections import Counter
+
+stopwords = [
+    "the", "to", "and", "of", "a", "her", "i", "in", "was", "it",
+    "she", "he", "be", "that", "you", "not", "had", "as", "his", "for",
+    "with", "is", "have", "but", "at", "so", "all", "my", "been", "him",
+    "on", "by", "could", "would", "very", "no", "what", "which", "they",
+    "were", "there", "me", "an", "must", "this", "said", "from", "or",
+    "will", "any", "much", "than", "such", "their", "them", "if", "do",
+    "did", "one", "when", "your", "more", "are", "we", "who", "up",
+    "out", "down", "into", "s", "t"
+]
+
+stopwords = stopwords + [
+    "mr", "mrs", "miss", "am", "should", "now", "these",
+    "yet", "some", "before", "myself",
+    "has", "though", "herself", "how", "upon", "our",
+    "its", "only", "every", "then"
+]
+
+book1_content = [w for w in book1_words if w not in stopwords]
+book2_content = [w for w in book2_words if w not in stopwords]
+
+book1_counts = Counter(book1_content)
+book2_counts = Counter(book2_content)
+
+print("Pride and Prejudice:", book1_counts.most_common(10))
+print("Frankenstein:", book2_counts.most_common(10))
+```
+I used .endswith() and .startswith() to find words ending in ly, ness, and ment and words starting with un. I divided the counts by the total words and multiplied it by 1000 to compare the books fairly like in part 2. Austen had words ending in ly and ment, while Shelley had more words ending with ness and starting with un. The ly words weren't all adverbs becuase there were words like fly and reply as well. I also removed blank lines and counted the lines with quotationmarks. Pride and Prejudice had about 13.95% and Frankenstein had about 6.84%. I used the stopword list from the slides and added more words on after seeing the results. Then I used counter and .most_common(10) to find the most common words left. Austen's results had names of the characters in the book like Elizabeth and Darcy. Shelley's had words like man, father, and life which suggest topcis about people and family. I used ChatGPT to help decide what extra stopwords to use after seeing how common the words still looked after using the stop list from the class slides.
+
+
+## Part 4 — Visualize It
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.bar(["Jane Austen", "Mary Shelley"],
+        [book1_ly_rate, book2_ly_rate])
+
+plt.title("Words Ending in -ly")
 plt.xlabel("Author")
-plt.ylabel("-ly words per 1,000 words")
-plt.tight_layout()
-plt.savefig("ly_comparison.png", dpi=300)
+plt.ylabel("Matches per 1,000 words")
+plt.savefig("ly_comparison.png")
 plt.show()
-plt.close()
+```
+```{python}
+book1_freqs = [pair[1] for pair in Counter(book1_words).most_common()]
+book2_freqs = [pair[1] for pair in Counter(book2_words).most_common()]
 
-plt.figure(figsize=(8, 5))
+book1_ranks = range(1, len(book1_freqs) + 1)
+book2_ranks = range(1, len(book2_freqs) + 1)
 
-for title, words in [
-    ("Pride and Prejudice", book1_words),
-    ("Frankenstein", book2_words)
-]:
-    frequencies = [pair[1] for pair in Counter(words).most_common()]
-    ranks = range(1, len(frequencies) + 1)
-    plt.plot(ranks, frequencies, label=title)
+plt.plot(book1_ranks, book1_freqs, label="Jane Austen")
+plt.plot(book2_ranks, book2_freqs, label="Mary Shelley")
 
+plt.title("Word Rank vs. Frequency")
+plt.xlabel("Rank")
+plt.ylabel("Frequency")
 plt.xscale("log")
 plt.yscale("log")
-plt.title("Zipf Plot of Both Novels")
-plt.xlabel("Word rank (log scale)")
-plt.ylabel("Word frequency (log scale)")
 plt.legend()
-plt.tight_layout()
-plt.savefig("zipf_comparison.png", dpi=300)
+plt.savefig("zipf_comparison.png")
 plt.show()
-plt.close()
 ```
-My code makes a bar chart comparing how often each author uses words ending in ly. Then it makes a Zipf plot by putting words in order from most to least common and plotting their rank and frequency on log scales. It adds titles, labels, and a legend, and saves both charts as image files. I used ChatGPT to troubleshoot a few things.
+I used matplotlib to make a bar chart comparing ly words for both authors. The author names are the labels, and the rates from part 3 are the heights of the bars. For the Zipf plot, I used counter to put all the words in order from most common to least common. I used pair[1] to get each word's count and range() to create the ranks. I plotted both books on the same graph and made both axes log scales. I added titles, labels, and a legend and used .savefig() to save both charts. I used ChatGPT to help me fully understand how to use log with the charts.
 
 ## Part 5 — The Verdict
+Like I previously mentioned Austen had higher rates of words ending in ly and ment, while Shelley had higher rates of words ending in ness and words starting with un. Austen's common words had characters names like Darcy and Elizabeth while Shelley's included man, father, and life. I think the ly rate was the most useful because there was a noticeable difference between the books. Average word length was the least useful because the results were almost the same. If I had an anonymous chapter, I would check the ly rate first, but I would need more evidence before deciding who wrote it.
 
-Austen uses more words ending in ly and ment, while Shelley uses more words ending in ness and starting with un. Frankenstein has a higher TTR in both comparisons. Pride and Prejudice has a lot of character names in its common words, while Frankenstein has words like life and father. I thought comparing the first 10,000 words was the most useful because both books were being compared at the same length. Average word length was the least useful because the results were almost the same. If I had to guess who wrote an anonymous chapter, I would check the rate of ly words first because there was a difference between the books, but that alone would not give me a definite answer.
 
-## Part 6 — Reflection
-Setting up the graphs was a little difficult for me. I also got confused about what went in the terminal and what went in the file in VS Code. I thought it was surprising how similar the average word lengths were even though the books were different lengths. I used ChatGPT for help with troubleshooting. Setting up the graphs on my own was a little harder than following along in class. 
+## Part 6 - Reflection
+
+Finding the right file paths for the books was a little difficult for me at first. I thought it was suprising how close the average word lengths were even though the books had different lengths and vocabulary. As logs have intimidated me in classes in the past they did scare me a little in this with the charts. I used ChatGPT to help me fix my file paths issue, and open the book texts, further explain some of the terms in the slides and especially help me with logs, and add the extra stop words to the list of stopwords.
