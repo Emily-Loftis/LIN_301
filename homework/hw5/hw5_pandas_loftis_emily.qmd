@@ -1,0 +1,94 @@
+---
+title: "HW 5 — Your Fandom in a Table"
+author: "Emily Loftis"
+format: html
+jupyter: python3
+---
+
+
+## Source
+
+I used an online transcript of my favorite movie ever, After (2019):
+https://transcripts.simpleremix.com/script.php/after-2019-HJU4
+
+I google searched to find the trascript because this movie script wasn't in the movie script link given to us. I had Chat GPT make a copy of the script i could paste into my text file as the only script I could find with the names of the speakers wouldn't let me copy it from the website. I couldn't keep the sentence fragments out of the script i'm not sure why when the original script from the website didn't have fragments I guess it is an error of Chat GPT, but I did confirm the speakers went with the correct scripts for several of the first lines as I've watched the movie so many times I remember the words now.
+
+
+## Reading the text
+
+```{python}
+import pandas as pd
+
+with open("hw5_raw.txt", "r", encoding="utf-8") as f:
+    lines = f.readlines()
+
+print(len(lines))
+print(lines[:10])
+```
+
+I imported pandas, then pasted the transcript into a text file then put the lines from it into a list. Next I printed the number of the lines and the first 10 lines to check that it opened correctly.
+
+
+## Cleaning the text and building the table
+
+```{python}
+rows = []
+speaker = ""
+line_number = 0
+
+for line in lines:
+    line = line.strip()
+
+    if line != "":
+        if ": " in line:
+            parts = line.split(": ")
+            speaker = parts[0]
+            line = ": ".join(parts[1:])
+
+        if speaker != "MUSIC":
+            line_number += 1
+            rows.append({
+                "line": line,
+                "speaker": speaker,
+                "line_number": line_number
+            })
+
+df = pd.DataFrame(rows)
+
+print(len(df))
+df.head(10)
+```
+
+I went through the text with a loop and removed extra spaces and newline characters. Then seperated the speakers' names from the dialogue and kept the same speaker until another name was there. I left out the blank lines and the section labeled MUSIC because I wanted to focus on dialogue. After I made a table with the line, speaker, and line number.
+
+
+## Adding new columns
+
+```{python}
+df["length"] = df["line"].str.len()
+df["lower"] = df["line"].str.lower()
+df["is_question"] = df["line"].str.endswith("?")
+
+df.head(10)
+```
+
+I added 3 columns to show the character count, a lowercase version of each line, and whether the line ends with a quesiton mark. If its true it means it ends with a question mark. If it doesn't end with a question mark it's false.
+
+
+## Saving and checking the CSV
+
+```{python}
+df.to_csv("hw5_loftis_emily.csv", index=False, encoding="utf-8-sig")
+
+saved_df = pd.read_csv("hw5_loftis_emily.csv")
+
+print(len(saved_df))
+saved_df.head(10)
+```
+
+
+I saved my table as a CSV without the extra index column. Then I opened the CSV again and printed the number of rows and the first 10 rows to check that it saved correctly.
+
+## Reflection
+
+I chose After because it is my favorite movie and thought it would be cool to work with a dialogue I remember so well. Each row represents one text line from the transcript, although some sentences are split into fragments in many rows because the text was split strangely after I had to have Chat GPT help me copy it. I removed blank spaces and all the sections labeled MUSIC because I just wanted to focus on the dialogue. My final table has 1349 rows. I noticed in the first 10 rows only one line was true. I pasted the website into Chat GPT like i previously mentioned when I couldn't copy it straight from the website and had it make me a copyable script to paste into my qmd. I also used Chat GPT to help me understand why I kept getting an error a couple times andd exactly what was causing it.
